@@ -1,3 +1,0 @@
-console.log("Test!")
-
-console.log(process.env["BOT_TOKEN"])
