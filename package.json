@@ -1,0 +1,19 @@
+{
+  "name": "jannie-bot",
+  "version": "0.0.1",
+  "description": "Discord bot created for specific purposes & fun",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CozzyBro2/jannie-bot.git"
+  },
+  "author": "HashCollision",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CozzyBro2/jannie-bot/issues"
+  },
+  "homepage": "https://github.com/CozzyBro2/jannie-bot#readme"
+}
