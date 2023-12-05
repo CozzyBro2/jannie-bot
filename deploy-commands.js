@@ -23,14 +23,16 @@ const rest = new REST().setToken(process.env.TOKEN);
 
 (async () => {
 	try {
-		console.log(`Deploying ${commands.length} slash commands`);
+        if (process.argv[2] === "true") {
+            console.log(`Deploying ${commands.length} slash commands globally`);
 
-        if (process.argv[2] === true) {
             await rest.put(
-                Routes.applicationGuildCommands(process.env.CLIENT_ID),
+                Routes.applicationCommands(process.env.CLIENT_ID),
                 {body: commands},
             );
         } else {
+            console.log(`Deploying ${commands.length} slash commands`);
+
             await rest.put(
                 Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
                 {body: commands},

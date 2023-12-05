@@ -2,50 +2,36 @@ require("dotenv").config()
 
 const fs = require("fs")
 const path = require("path")
-const {Client, Collection, Events, GatewayIntentBits} = require("discord.js")
+const {Client, Collection, GatewayIntentBits} = require("discord.js")
 
 const client = new Client({intents: [GatewayIntentBits.Guilds]})
 client.commands = new Collection()
 
-const folder = path.join(__dirname, "commands")
+const commandFolder = path.join(__dirname, "commands")
+const eventFolder = path.join(__dirname, "events")
 
-for (const file of fs.readdirSync(folder)) {
+for (const file of fs.readdirSync(commandFolder)) {
     if (file.endsWith(".js")) {
-        const command = require(path.join(folder, file))
+        const command = require(path.join(commandFolder, file))
 
         if ("data" in command && "execute" in command) {
             client.commands.set(command.data.name, command)
         } else {
-            throw new Error(`Command file ${path.join(folder, file)} is missing a 'data' or 'execute' property.`)
+            throw new Error(`Command file ${path.join(commandFolder, file)} is missing a 'data' or 'execute' property.`)
         }
     }
 }
 
-client.on(Events.InteractionCreate, async interaction => {
-    if (interaction.isChatInputCommand()) {
-        const command = client.commands.get(interaction.commandName)
+for (const file of fs.readdirSync(eventFolder)) {
+    if (file.endsWith(".js")) {
+        const event = require(path.join(eventFolder, file))
 
-        if (!command) {
-            console.error(`Command ${interaction.commandName} not found`)
-            return
-        }
-
-        try {
-            await command.execute(interaction)
-        } catch (err) {
-            console.error(err)
-
-            if (interaction.replied || interaction.deferred) {
-                await interaction.followUp({content: "Error while executing command", ephemeral: true})
-            } else {
-                await interaction.reply({content: "Error while executing command", ephemeral: true})
-            }
+        if (event.once) {
+            client.once(event.name, (...args) => event.execute(...args));
+        } else {
+            client.on(event.name, (...args) => event.execute(...args));
         }
     }
-})
-
-client.once(Events.ClientReady, bot => {
-    console.log(`Logged in as ${bot.user.tag}`)
-})
+}
 
 client.login(process.env.TOKEN)
