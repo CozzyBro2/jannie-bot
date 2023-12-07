@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 
 const commands = []
-const folder = path.join(__dirname, "commands")
+const folder = path.join(__dirname, "../", "src", "commands")
 
 for (const file of fs.readdirSync(folder)) {
     if (file.endsWith(".js")) {

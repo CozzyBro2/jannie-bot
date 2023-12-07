@@ -7,8 +7,8 @@ const {Client, Collection, GatewayIntentBits} = require("discord.js")
 const client = new Client({intents: [GatewayIntentBits.Guilds]})
 client.commands = new Collection()
 
-const commandFolder = path.join(__dirname, "commands")
-const eventFolder = path.join(__dirname, "events")
+const commandFolder = path.join(__dirname, "src", "commands")
+const eventFolder = path.join(__dirname, "src", "events")
 
 for (const file of fs.readdirSync(commandFolder)) {
     if (file.endsWith(".js")) {

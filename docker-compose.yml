@@ -1,6 +1,0 @@
-services:
-  bot:
-    build: src/server   
-    network_mode: host
-    environment:
-      TOKEN:

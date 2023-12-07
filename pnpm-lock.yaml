@@ -8,15 +8,17 @@ dependencies:
   axios:
     specifier: ^1.6.2
     version: 1.6.2
-  bufferutil:
-    specifier: ^4.0.8
-    version: 4.0.8
   discord.js:
     specifier: ^14.14.1
     version: 14.14.1(bufferutil@4.0.8)(utf-8-validate@6.0.3)
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
+
+optionalDependencies:
+  bufferutil:
+    specifier: ^4.0.8
+    version: 4.0.8
   utf-8-validate:
     specifier: ^6.0.3
     version: 6.0.3
