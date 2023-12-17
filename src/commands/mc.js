@@ -1,5 +1,5 @@
 const {SlashCommandBuilder, EmbedBuilder} = require("discord.js")
-const {request} = require("undici")
+const {request} = require("axios")
 
 module.exports = {
     data: new SlashCommandBuilder()
