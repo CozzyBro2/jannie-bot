@@ -11,6 +11,7 @@ module.exports = {
         .addStringOption(option => option
             .setName("word")
             .setDescription("The word to query")
+            .setMaxLength(50)
             .setRequired(true))
         .setDMPermission(false),
     async execute(interaction) {

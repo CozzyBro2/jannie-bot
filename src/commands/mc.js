@@ -8,6 +8,8 @@ module.exports = {
         .addStringOption(option => option
             .setName("address")
             .setDescription("The address of the Minecraft server")
+            .setMaxLength(30)
+            .setMinLength(2)
             .setRequired(false))
         .setDMPermission(false),
     async execute(interaction) {
