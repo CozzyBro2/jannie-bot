@@ -12,12 +12,13 @@ module.exports = {
             }
     
             try {
+                await interaction.deferReply()
                 await command.execute(interaction)
             } catch (err) {
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp({content: "Error while executing command", ephemeral: true})
                 } else {
-                    await interaction.reply({content: "Error while executing command", ephemeral: true})
+                    await interaction.reply({content: "Error while executing command", ephemeral: true, fetchReply: true})
                 }
 
                 console.error(`Could not execute ${interaction.commandName} command: ${err}`)

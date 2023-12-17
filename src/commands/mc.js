@@ -1,5 +1,5 @@
 const {SlashCommandBuilder, EmbedBuilder} = require("discord.js")
-const axios = require("axios")
+const {request} = require("undici")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,25 +14,24 @@ module.exports = {
         const address = interaction.options.getString("address") ?? "mc.hashg.xyz"
         const embed = new EmbedBuilder()
 
-        const res = await axios.get(`https://api.mcsrvstat.us/3/${address}`)
-        const data = res.data
+        const api = await request(`https://api.mcsrvstat.us/3/${address}`)
+        const {hostname, debug, online, players, motd, version, port} = await api.body.json()
 
         embed.setColor(0x0099FF)
         embed.setAuthor({
-            name: `${data.hostname ?? address}`,
+            name: `${hostname ?? address}`,
             iconURL: "https://mcsrvstat.us/img/minecraft.png",
             url: `https://api.mcsrvstat.us/3/${address}`
         })
-        embed.setFooter({text: `Can refresh in: ${data.debug.cacheexpire - Math.floor(Date.now() / 1000)}(s)`})
+        embed.setFooter({text: `Can refresh in: ${debug.cacheexpire - Math.floor(Date.now() / 1000)}(s)`})
         embed.setTimestamp()
 
-        if (data.online) {
-            const players = data.players
+        if (online) {
             const playing = players.list
     
             embed.setTitle("Online")
             embed.addFields({name: "Players", value: `${players.online} / ${players.max}`})
-            embed.setDescription(`\`\`\`${data.motd.clean}\`\`\``)
+            embed.setDescription(`\`\`\`${motd.clean}\`\`\``)
     
             if (playing) {
                 let playerStr = ""
@@ -44,13 +43,13 @@ module.exports = {
             }
 
             embed.addFields(
-                {name: "Version", value: `${data.version}`, inline: true},
-                {name: "Port", value: `${data.port}`, inline: true},
+                {name: "Version", value: `${version}`, inline: true},
+                {name: "Port", value: `${port}`, inline: true},
             )
         } else {
             embed.setTitle(`No server online at this address`)
         }
 
-        await interaction.reply({embeds: [embed]})
+        await interaction.editReply({embeds: [embed]})
     }
 }
