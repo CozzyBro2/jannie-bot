@@ -4,6 +4,7 @@ const {request} = require("axios")
 const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
 
 module.exports = {
+    ephemeral: true,
     data: new SlashCommandBuilder()
         .setName("whatis")
         .setDescription("Returns the definition of a specified word")

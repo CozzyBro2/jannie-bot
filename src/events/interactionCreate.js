@@ -12,7 +12,7 @@ module.exports = {
             }
     
             try {
-                await interaction.deferReply()
+                await interaction.deferReply({ephemeral: command.ephemeral || false})
                 await command.execute(interaction)
             } catch (err) {
                 if (interaction.replied || interaction.deferred) {
