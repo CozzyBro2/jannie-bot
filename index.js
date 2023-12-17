@@ -36,7 +36,7 @@ for (const file of fs.readdirSync(eventFolder)) {
 
 client.on("ready", bot => {
     console.log(`Logged in as ${bot.user.tag}`)
-    client.user.setPresence({activities: [{name: "with your noor", type: 0}], status: "online"})
+    client.user.setPresence({activities: [{name: "Fortnite", type: 0}], status: "idle"})
 })
 
 client.login(process.env.TOKEN)
