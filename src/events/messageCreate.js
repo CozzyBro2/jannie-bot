@@ -1,4 +1,4 @@
-const {Events} = require("discord.js")
+const {Events, } = require("discord.js")
 const {GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} = require("@google/generative-ai")
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLEAI_KEY)
@@ -48,26 +48,30 @@ module.exports = {
             const mentioned = message.mentions.users.first()
 
             if (mentioned && mentioned.id === message.client.user.id) {
-                const content = message.content
-                // TODO: Prompt blocked error handling
-                const result = await chat.sendMessageStream(prompt + content)
+                const content = message.content.replace(/<@!?\d+>/g, '');
+                
+                try {
+                    const result = await chat.sendMessageStream(prompt + content)
 
-                let text = ""
-                let msg = null
-
-                for await (const chunk of result.stream) {
-                    const chunkText = chunk.text()
-                    text += chunkText
-
-                    if (!msg) {
-                        msg = await message.reply({content: chunk.text(), fetchReply: true})
+                    let text = ""
+                    let msg = null
+    
+                    for await (const chunk of result.stream) {
+                        const chunkText = chunk.text()
+                        text += chunkText
+    
+                        if (!msg) {
+                            msg = await message.reply({content: chunk.text(), fetchReply: true})
+                        }
+    
+                        await msg.edit(text)
                     }
-
-                    await msg.edit(text)
+    
+                    history.push({role: "user", parts: content})
+                    history.push({role: "model", parts: text})
+                } catch (err) {
+                    await message.reply("Error while generating response")
                 }
-
-                history.push({role: "user", parts: content})
-                history.push({role: "model", parts: text})
             }
         }
     }
