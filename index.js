@@ -2,9 +2,15 @@ require("dotenv").config()
 
 const fs = require("fs")
 const path = require("path")
-const {Client, Collection, GatewayIntentBits} = require("discord.js")
+const {Client, Collection, GatewayIntentBits, ActivityType} = require("discord.js")
 
-const client = new Client({intents: [GatewayIntentBits.Guilds]})
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages
+    ]
+})
+
 client.commands = new Collection()
 
 const commandFolder = path.join(__dirname, "src", "commands")
@@ -36,7 +42,7 @@ for (const file of fs.readdirSync(eventFolder)) {
 
 client.on("ready", bot => {
     console.log(`Logged in as ${bot.user.tag}`)
-    client.user.setPresence({activities: [{name: "Fortnite", type: 0}], status: "idle"})
+    client.user.setPresence({activities: [{name: "Fortnite", type: ActivityType.Competing}], status: "online"})
 })
 
 client.login(process.env.TOKEN)

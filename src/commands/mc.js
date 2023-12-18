@@ -2,6 +2,7 @@ const {SlashCommandBuilder, EmbedBuilder} = require("discord.js")
 const {request} = require("axios")
 
 module.exports = {
+    defer: true,
     data: new SlashCommandBuilder()
         .setName("mc")
         .setDescription("Returns information about the specified Minecraft server")
@@ -17,9 +18,9 @@ module.exports = {
         const embed = new EmbedBuilder()
 
         const api = await request(`https://api.mcsrvstat.us/3/${address}`)
-        const {hostname, debug, online, players, motd, version, port} = await api.body.json()
+        const {hostname, debug, online, players, motd, version, port} = api.data
 
-        embed.setColor(0x0099FF)
+        embed.setColor("#ffbb00")
         embed.setAuthor({
             name: `${hostname ?? address}`,
             iconURL: "https://mcsrvstat.us/img/minecraft.png",

@@ -4,7 +4,7 @@ const {request} = require("axios")
 const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
 
 module.exports = {
-    ephemeral: true,
+    defer: true,
     data: new SlashCommandBuilder()
         .setName("whatis")
         .setDescription("Returns the definition of a specified word")
@@ -16,10 +16,9 @@ module.exports = {
         .setDMPermission(false),
     async execute(interaction) {
         const word = interaction.options.getString("word")
-        const query = new URLSearchParams({word})
 
         const embed = new EmbedBuilder()
-        embed.setColor(0x0099FF)
+        embed.setColor("#ffbb00")
         embed.setTitle(`No definition found for **${word}**.`)
 
         const options = {
