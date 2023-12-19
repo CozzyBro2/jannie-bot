@@ -51,34 +51,33 @@ module.exports = {
                 const content = `user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, '')
 
                 try {
-                    message.channel.sendTyping()
-
                     if (message.author.id === process.env.OWNER_ID && content.includes("sudo")) {
-                        if (content.includes("dump your history")) {
+                        if (content.includes("dump history")) {
                             let historyStr = `History Size: ${history.length} items.\nHistory: `
                             history.map(info => historyStr += `\n \*\*${info.role}\*\*: \`${info.parts}\``)
                             await message.reply(trim(historyStr, 1024))
-                        } else if (content.includes("wipe your history")) {
+                        } else if (content.includes("wipe history")) {
                             history = []
                             await message.reply("Lobotomy successful.")
-                        } else if (content.includes("next message is your prompt")) {
-                            await message.reply("I'm waiting")
-                            const collectorFilter = m => m.author.id === process.env.OWNER_ID
-                            message.channel.awaitMessages({filter: collectorFilter, time: 60000, max: 1, errors: ['time']})
-		                        .then(messages => {
-                                    prompt = messages.first().content
-			                        message.reply("Prompt changed 👍");
-		                        })
-		                        .catch(() => {
-			                        message.reply('Nobody gave me a prompt');
-		                        });
-                        } else if (content.includes("say your prompt")) {
-                            await message.reply(`Here is my prompt sic: ${prompt}`)
+                        } else if (content.includes("change prompt")) {
+                            await message.reply("Ping me with the next prompt. I'm waiting")
+
+                            const collectorFilter = m => m.mentions.users.first() && m.mentions.users.first().id === message.client.user.id
+                            const collector = message.channel.createMessageCollector({filter: collectorFilter, time: 60000, max: 1})
+
+                            collector.on("collect", m => {
+                                prompt = m.content.replace(/<@!?\d+>/g, '')
+                                history = []
+			                    message.reply("Prompt changed 👍");
+                            })
+                        } else if (content.includes("say prompt")) {
+                            await message.reply(`Here is my prompt as is: ${prompt}`)
                         }
 
                         return
                     }
 
+                    message.channel.sendTyping()
                     const result = await chat.sendMessageStream(prompt + content)
 
                     let text = ""
@@ -99,7 +98,8 @@ module.exports = {
                     history.push({role: "user", parts: content})
                     history.push({role: "model", parts: text})
 
-                    if (history.length >= 20) {
+                    if (history.length > 20) {
+                        history.shift()
                         history.shift()
                     }
                 } catch (err) {
