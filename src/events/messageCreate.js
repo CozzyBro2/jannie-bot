@@ -1,11 +1,6 @@
 const {Events, } = require("discord.js")
 const {GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} = require("@google/generative-ai")
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLEAI_KEY)
-const model = genAI.getGenerativeModel({model: "gemini-pro"})
-
-const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str)
-
 const generationConfig = {
     temperature: 0.05,
     topK: 1,
@@ -32,14 +27,12 @@ const safetySettings = [
     },
 ];
 
-let prompt = process.env.GOOGLEAI_PROMPT
-let history = []
+const genAI = new GoogleGenerativeAI(process.env.GOOGLEAI_KEY)
+const model = genAI.getGenerativeModel({model: "gemini-pro", generationConfig, safetySettings})
 
-const chat = model.startChat({
-    generationConfig,
-    safetySettings,
-    history: history,
-})
+const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str)
+
+let prompt = process.env.GOOGLEAI_PROMPT
 
 module.exports = {
     name: Events.MessageCreate,
@@ -78,29 +71,21 @@ module.exports = {
                     }
 
                     message.channel.sendTyping()
-                    const result = await chat.sendMessageStream(prompt + content)
+                    const result = await model.generateContentStream(prompt + content)
 
                     let text = ""
                     let msg = null
-    
+
                     for await (const chunk of result.stream) {
                         const chunkText = chunk.text()
                         text += chunkText
-    
+
                         if (!msg) {
                             msg = await message.reply({content: chunk.text(), fetchReply: true})
                             continue
                         }
 
                         await msg.edit(text)
-                    }
-
-                    history.push({role: "user", parts: content})
-                    history.push({role: "model", parts: text})
-
-                    if (history.length > 20) {
-                        history.shift()
-                        history.shift()
                     }
                 } catch (err) {
                     console.log(err)
