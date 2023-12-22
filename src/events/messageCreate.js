@@ -30,9 +30,17 @@ const safetySettings = [
 const genAI = new GoogleGenerativeAI(process.env.GOOGLEAI_KEY)
 const model = genAI.getGenerativeModel({model: "gemini-pro", generationConfig, safetySettings})
 
+let history = []
+let prompt = process.env.GOOGLEAI_PROMPT
+
 const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str)
 
-let prompt = process.env.GOOGLEAI_PROMPT
+function printHistory() {
+    let historyStr = ""
+    history.map(info => historyStr += `\n ${info.content}`) 
+
+    return historyStr
+}
 
 module.exports = {
     name: Events.MessageCreate,
@@ -41,14 +49,12 @@ module.exports = {
             const mentioned = message.mentions.users.first()
 
             if (mentioned && mentioned.id === message.client.user.id) {
-                const content = `user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, '')
+                const content = `user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, 'Pineapples,')
 
                 try {
                     if (message.author.id === process.env.OWNER_ID && content.includes("sudo")) {
                         if (content.includes("dump history")) {
-                            let historyStr = `History Size: ${history.length} items.\nHistory: `
-                            history.map(info => historyStr += `\n \*\*${info.role}\*\*: \`${info.parts}\``)
-                            await message.reply(trim(historyStr, 1024))
+                            await message.reply(trim(printHistory(), 1024))
                         } else if (content.includes("wipe history")) {
                             history = []
                             await message.reply("Lobotomy successful.")
@@ -71,7 +77,11 @@ module.exports = {
                     }
 
                     message.channel.sendTyping()
-                    const result = await model.generateContentStream(prompt + content)
+                    const result = await model.generateContentStream(`
+                        Your prompt: ${prompt}.
+                        \n The Conversation History: ${printHistory()}
+                        \n ${content}`
+                    )
 
                     let text = ""
                     let msg = null
@@ -86,6 +96,12 @@ module.exports = {
                         }
 
                         await msg.edit(text)
+                    }
+
+                    history.push({content: content + ` model replies: ${text}`})
+
+                    if (history.length > 20) {
+                        history.shift()
                     }
                 } catch (err) {
                     console.log(err)
