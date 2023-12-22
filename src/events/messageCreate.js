@@ -2,8 +2,8 @@ const {Events, } = require("discord.js")
 const {GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} = require("@google/generative-ai")
 
 const generationConfig = {
-    temperature: 0.05,
-    topK: 1,
+    temperature: 1,
+    topK: 16,
     topP: 1,
     maxOutputTokens: 1512,
 }
@@ -49,7 +49,7 @@ module.exports = {
             const mentioned = message.mentions.users.first()
 
             if (mentioned && mentioned.id === message.client.user.id) {
-                const content = `user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, 'Pineapples,')
+                const content = trim(`user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, 'Pineapples,'), 512)
 
                 try {
                     if (message.author.id === process.env.OWNER_ID && content.includes("sudo")) {
@@ -98,7 +98,7 @@ module.exports = {
                         await msg.edit(text)
                     }
 
-                    history.push({content: content + ` model replies: ${text}`})
+                    history.push({content: `${content}\n model replies: ${text}`})
 
                     if (history.length > 20) {
                         history.shift()
