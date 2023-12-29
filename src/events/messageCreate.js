@@ -52,36 +52,13 @@ module.exports = {
                 const content = trim(`user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, 'Pineapples,'), 512)
 
                 try {
-                    if (message.author.id === process.env.OWNER_ID && content.includes("sudo")) {
-                        if (content.includes("dump history")) {
-                            await message.reply(trim(printHistory(), 1024))
-                        } else if (content.includes("wipe history")) {
-                            history = []
-                            await message.reply("Lobotomy successful.")
-                        } else if (content.includes("change prompt")) {
-                            await message.reply("Ping me with the next prompt. I'm waiting")
-
-                            const collectorFilter = m => m.mentions.users.first() && m.mentions.users.first().id === message.client.user.id
-                            const collector = message.channel.createMessageCollector({filter: collectorFilter, time: 60000, max: 1})
-
-                            collector.on("collect", m => {
-                                prompt = m.content.replace(/<@!?\d+>/g, '')
-                                history = []
-			                    message.reply("Prompt changed 👍");
-                            })
-                        } else if (content.includes("say prompt")) {
-                            await message.reply(`Here is my prompt as is: ${prompt}`)
-                        }
-
-                        return
-                    }
-
                     message.channel.sendTyping()
-                    const result = await model.generateContentStream(`
-                        Your prompt: ${prompt}.
-                        \n The Conversation History: ${printHistory()}
-                        \n ${content}`
-                    )
+
+		            const result = await model.generateContentStream(`
+			            Your prompt: ${prompt}.
+                        \n Previous messages addressed to you: ${printHistory()}
+                        \n Now, ${content}`
+		            )
 
                     let text = ""
                     let msg = null
@@ -98,10 +75,10 @@ module.exports = {
                         await msg.edit(text)
                     }
 
-                    history.push({content: `${content}\n model replies: ${text}`})
+                    history.push({content: content})
 
                     if (history.length > 20) {
-                        history.shift()
+			            history.shift()
                     }
                 } catch (err) {
                     console.log(err)
