@@ -8,7 +8,7 @@ const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : s
 module.exports = {
     name: Events.MessageCreate,
     async execute(message) {
-        if (process.env.HUMANS_ONLY && message.author.bot) {
+        if (process.env.AI_HUMANS_ONLY && message.author.bot) {
             return;
         }
 
