@@ -1,14 +1,12 @@
 const {Events} = require("discord.js")
-const {generate, formatHistory} = require("../ai_handler")
-
-let prompt = process.env.GOOGLEAI_PROMPT
+const {generate} = require("../ai_handler")
 
 const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str)
 
 module.exports = {
     name: Events.MessageCreate,
     async execute(message) {
-        if (process.env.AI_HUMANS_ONLY && message.author.bot) {
+        if (process.env.AI_HUMANS_ONLY === true && message.author.bot) {
             return;
         }
 
@@ -18,17 +16,10 @@ module.exports = {
             try {
                 message.channel.sendTyping()
 
-                var input = `
-                    Your prompt: ${prompt}.
-                    \n Previous messages addressed to you: ${formatHistory()}
-                    \n Input: ${content}`
-
-                console.log(content)
-
                 let text = ""
                 let msg = null
 
-                generate(input, {callback: async (chunkText) => {
+                generate(content, {callback: async (chunkText) => {
                     text += chunkText
 
                     if (!msg) {

@@ -1,7 +1,5 @@
 const {SlashCommandBuilder} = require("discord.js")
-const {generate, formatHistory} = require("../ai_handler")
-
-let prompt = process.env.GOOGLEAI_PROMPT
+const {generate} = require("../ai_handler")
 
 module.exports = {
     ephemeral: false,
@@ -25,13 +23,6 @@ module.exports = {
     async execute(interaction) {
         const speakSoy = interaction.options.getBoolean("soy") ?? false
         let input = interaction.options.getString("message")
-
-        if (!speakSoy) {
-            input = `
-                Your prompt: ${prompt}.
-                \n Previous messages addressed to you: ${formatHistory()}
-                \n Input: ${input}`
-        }
 
         let text = ""
         let msg = null
