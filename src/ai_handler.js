@@ -52,17 +52,16 @@ module.exports = {
         }
 
         if (!ignoreHistory) {
-          input += `\nPrevious messages addressed to you: ${formatHistory()}`
+            input += `\nPrevious messages addressed to you: ${formatHistory()}`
         }
 
         input += `\nNow, ${content}`
-        console.log(input)
         const result = await model.generateContentStream(input)
 
         for await (const chunk of result.stream) {
             const chunkText = chunk.text()
 
-            callback(chunkText)
+            await callback(chunkText)
         }
 
         if (!ignoreHistory) {
@@ -72,5 +71,8 @@ module.exports = {
 			          history.shift()
             }
         }
+    },
+    setPrompt(newPrompt) {
+        prompt = newPrompt
     }
 }

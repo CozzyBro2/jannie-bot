@@ -6,7 +6,7 @@ module.exports = {
     defer: true,
     data: new SlashCommandBuilder()
         .setName("ai")
-        .setDescription("AI commands")
+        .setDescription("Generate a response from the AI, optionally with a clean (soy) prompt")
         .addStringOption(option => option
             .setName("message")
             .setDescription("String relayed to the AI")
@@ -19,15 +19,15 @@ module.exports = {
             .setDescription("Bypasses the set prompt in favor of default behavior")
             .setRequired(false)
         )
-        .setDMPermission(true),
+        .setDMPermission(false),
     async execute(interaction) {
         const speakSoy = interaction.options.getBoolean("soy") ?? false
-        let input = interaction.options.getString("message")
+        const input = interaction.options.getString("message")
 
         let text = ""
         let msg = null
 
-        generate(input, {ignoreHistory: speakSoy, callback: async (chunkText) => {
+        generate(input, {ignoreHistory: speakSoy, ignorePrompt: speakSoy, callback: async (chunkText) => {
             text += chunkText
 
             if (!msg) {
@@ -37,5 +37,7 @@ module.exports = {
         
             await msg.edit(text)
         }})
+
+        console.log(input)
     }
 }

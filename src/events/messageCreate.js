@@ -11,7 +11,8 @@ module.exports = {
         }
 
         if (message.mentions.has(message.client.user.id)) {
-            const content = trim(`user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, `${process.env.AI_NAME},`), 512)
+            const content = trim(`user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, ` `), 512)
+            console.log(content)
 
             try {
                 message.channel.sendTyping()
