@@ -13,7 +13,7 @@ module.exports = {
     
             try {
                 if (command.defer) {
-                    await interaction.deferReply()
+                    await interaction.deferReply({ephemeral: command.ephemeral || false})
                 }
 
                 await command.execute(interaction)
