@@ -3,12 +3,13 @@ Work-In-Progress discord bot written with [Discord.js](https://discord.js.org/).
 
 # Capabilities
 ## Slash commands:
-- /mc     - Returns information about the specified Minecraft server (uses [mcsrvstat](https://api.mcsrvstat.us/))
-- /ping   - Returns latency stats
-- /ai     - Control the AI (W.I.P)
-- /whatis - Returns the definition of a specified word (uses [Urban Dictionary](https://rapidapi.com/community/api/urban-dictionary))  
+- /mc        - Returns information about the specified Minecraft server (uses [mcsrvstat](https://api.mcsrvstat.us/))
+- /ping      - Returns latency stats
+- /ai        - Generate an AI response without mentioning the bot, optionally without a prompt for use of bare Gemini
+- /manage_ai - Control AI variables such as the prompt (W.I.P)
+- /whatis    - Returns the definition of a specified word (uses [Urban Dictionary](https://rapidapi.com/community/api/urban-dictionary))  
 ## AI
-Will respond to you like an AI chat-bot if you mention the bot user.
+Will respond to you like an AI chat-bot if you mention the bot user, or with the `/ai` command.
 
 # Setup packages
 First, ensure you have all the production dependencies:  
@@ -50,3 +51,6 @@ To run the bot, run:
 ```
 node .
 ```
+You can also run it with [Bun](https://bun.sh/).
+As of Bun 1.1.5, everything works except for TextDecoderStream used in the Generative AI Package and the Brotli implementation used in Axios.
+Currently, i've implemented a workaround or Axios at run-time. To make `TextDecoderStream` in Google's package work, see this [issue](https://github.com/oven-sh/bun/issues/5648#issuecomment-1824093837).
