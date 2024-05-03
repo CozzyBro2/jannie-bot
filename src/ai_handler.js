@@ -32,11 +32,15 @@ const model = genAI.getGenerativeModel({model: "gemini-pro", generationConfig, s
 
 let history = []
 
-function formatHistory() {
-  let historyStr = ""
-  history.map(info => historyStr += `\n${info.content}`) 
+function dumpHistory() {
+    let historyStr = ""
+    history.map(info => historyStr += `\n${info.content}`) 
 
-  return historyStr
+    return historyStr
+}
+
+function wipeHistory() {
+    history = []
 }
 
 module.exports = {
@@ -52,14 +56,18 @@ module.exports = {
         }
 
         if (!ignoreHistory) {
-            input += `\nPrevious messages addressed to you: ${formatHistory()}`
+            input += `\nPrevious messages addressed to you: ${dumpHistory()}`
         }
 
         input += `\nNow, ${content}`
         const result = await model.generateContentStream(input)
 
         for await (const chunk of result.stream) {
-            const chunkText = chunk.text()
+            var chunkText = chunk.text()
+
+            if (chunkText === "") {
+                chunkText = "."
+            }
 
             await callback(chunkText)
         }
@@ -74,5 +82,7 @@ module.exports = {
     },
     setPrompt(newPrompt) {
         prompt = newPrompt
-    }
+    },
+    dumpHistory,
+    wipeHistory
 }

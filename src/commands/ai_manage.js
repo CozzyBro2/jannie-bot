@@ -1,5 +1,5 @@
 const {SlashCommandBuilder, PermissionFlagsBits} = require("discord.js")
-const {setPrompt} = require("../ai_handler")
+const {setPrompt, dumpHistory, wipeHistory} = require("../ai_handler")
 
 module.exports = {
     ephemeral: true,
@@ -19,14 +19,32 @@ module.exports = {
                 .setMinLength(2)
                 .setRequired(true)
             )
+        )
+        .addSubcommand(command => command
+            .setName("wipe")
+            .setDescription("Wipes the AI conversation history")
+        )
+        .addSubcommand(command => command
+            .setName("history")
+            .setDescription("Replies with the AI conversation history")
         ),
     async execute(interaction) {
-        if (interaction.options.getSubcommand() === "prompt") {
+        const cmd = interaction.options.getSubcommand()
+
+        if (cmd === "prompt") {
             const input = interaction.options.getString("new_prompt")
 
             setPrompt(input)
 
             interaction.editReply(`Prompt set to:\n\`\`\`${input}\`\`\``)
+        } else if (cmd == "wipe") {
+            wipeHistory()
+
+            interaction.editReply("Wiped 👍")
+        } else if (cmd == "history") {
+            const hist = dumpHistory()
+
+            interaction.editReply(`Conversation history:\n\`\`\`${hist}\`\`\``)
         }
     }
 }

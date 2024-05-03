@@ -6,7 +6,7 @@ Work-In-Progress discord bot written with [Discord.js](https://discord.js.org/).
 - /mc        - Returns information about the specified Minecraft server (uses [mcsrvstat](https://api.mcsrvstat.us/))
 - /ping      - Returns latency stats
 - /ai        - Generate an AI response without mentioning the bot, optionally without a prompt for use of bare Gemini
-- /manage_ai - Control AI variables such as the prompt (W.I.P)
+- /manage_ai - Change the AI prompt during runtime, dump conversation history, wipe conversation history
 - /whatis    - Returns the definition of a specified word (uses [Urban Dictionary](https://rapidapi.com/community/api/urban-dictionary))  
 ## AI
 Will respond to you like an AI chat-bot if you mention the bot user, or with the `/ai` command.
@@ -31,7 +31,6 @@ GUILD_ID=<dev_guild_id> # OPTIONAL: When not deploying commands globally, deploy
 RAPIDAPI_KEY=<key> # Needed to use the /whatis command. Get a key here: https://rapidapi.com/community/api/urban-dictionary
 GOOGLEAI_KEY=<key> # Needed to use AI functionality. Get a key here: https://ai.google.dev/tutorials/setup
 GOOGLEAI_PROMPT=<prompt> # Tells the AI what to do and how to act. Example: "You are a fish. You speak only like a fish, you speak no other way."
-AI_NAME=<name> # The name in which the AI is addressed by when you mention it
 AI_HUMANS_ONLY=<trueorfalse> # Whether the AI responds when other bots/apps mention it
 ```
 
