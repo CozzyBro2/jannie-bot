@@ -59,6 +59,8 @@ module.exports = {
             input += `\nPrevious messages addressed to you: ${dumpHistory()}`
         }
 
+        // TODO: Implement awareness of discord environment here
+
         input += `\nNow, ${content}`
         const result = await model.generateContentStream(input)
 
@@ -75,7 +77,7 @@ module.exports = {
         if (!ignoreHistory) {
             history.push({content: content})
 
-            if (history.length > 20 * 2) {
+            if (history.length > 20) {
 			          history.shift()
             }
         }
