@@ -1,25 +1,23 @@
 const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/genai")
 
-const generationConfig = {
-    safetySettings: [
-        {
-            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold: HarmBlockThreshold.BLOCK_NONE,
-        },
-        {
-            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-            threshold: HarmBlockThreshold.BLOCK_NONE,
-        },
-        {
-            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-            threshold: HarmBlockThreshold.BLOCK_NONE,
-        },
-        {
-            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold: HarmBlockThreshold.BLOCK_NONE,
-        },
-    ]
-}
+const safetySettings = [
+    {
+        category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+    {
+        category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+    {
+        category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+    {
+        category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+        threshold: HarmBlockThreshold.BLOCK_NONE,
+    },
+]
 
 const ai = new GoogleGenAI({apiKey: process.env.GOOGLEAI_KEY})
 
@@ -43,22 +41,23 @@ module.exports = {
         const ignoreHistory = options.ignoreHistory
         const ignorePrompt = options.ignorePrompt
 
-        var input = ""
+        var systemPrompt = ""
 
         if (!ignorePrompt) {
-            input += `Your prompt: ${prompt}`
+            systemPrompt += `Your prompt: ${prompt}`
         }
 
         if (!ignoreHistory) {
-            input += `\nPrevious messages addressed to you: ${dumpHistory()}`
+            systemPrompt += `\nPrevious messages addressed to you: ${dumpHistory()}`
         }
-
-        input += `\nNow, ${content}`
 
         const stream = await ai.models.generateContentStream({
             model: "gemini-2.0-flash",
-            contents: input,
-            config: generationConfig
+            contents: content,
+            config: {
+                safetySettings: safetySettings,
+                systemInstruction: systemPrompt
+            }
         })
 
         for await (const chunk of stream) {
