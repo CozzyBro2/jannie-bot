@@ -23,8 +23,10 @@ module.exports = {
                 generate(content, {callback: async (chunkText) => {
                     text += chunkText
 
-                    if (!msg) {
+                    if (!msg || text.length > 2000) {
+                        text = chunkText
                         msg = await message.reply({content: chunkText, fetchReply: true})
+
                         return
                     }
         
