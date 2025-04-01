@@ -1,4 +1,4 @@
-const {GoogleGenerativeAI, HarmBlockThreshold, HarmCategory} = require("@google/generative-ai")
+const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/gen-ai")
 let prompt = process.env.GOOGLEAI_PROMPT
 
 const generationConfig = {
@@ -78,7 +78,7 @@ module.exports = {
             history.push({content: content})
 
             if (history.length > 20) {
-			          history.shift()
+			    history.shift()
             }
         }
     },
