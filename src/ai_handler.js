@@ -1,35 +1,29 @@
-const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/gen-ai")
-let prompt = process.env.GOOGLEAI_PROMPT
+const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/genai")
 
 const generationConfig = {
-    temperature: 1,
-    topK: 16,
-    topP: 1,
-    maxOutputTokens: 1512,
+    safetySettings: [
+        {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+            threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+    ]
 }
 
-const safetySettings = [
-    {
-      category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-      threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-    {
-      category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-      threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-    {
-      category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-      threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-    {
-      category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-      threshold: HarmBlockThreshold.BLOCK_NONE,
-    },
-];
+const ai = new GoogleGenAI({apiKey: process.env.GOOGLEAI_KEY})
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLEAI_KEY)
-const model = genAI.getGenerativeModel({model: "gemini-pro", generationConfig, safetySettings})
-
+let prompt = process.env.GOOGLEAI_PROMPT
 let history = []
 
 function dumpHistory() {
@@ -59,13 +53,16 @@ module.exports = {
             input += `\nPrevious messages addressed to you: ${dumpHistory()}`
         }
 
-        // TODO: Implement awareness of discord environment here
-
         input += `\nNow, ${content}`
-        const result = await model.generateContentStream(input)
 
-        for await (const chunk of result.stream) {
-            var chunkText = chunk.text()
+        const stream = await ai.models.generateContentStream({
+            model: "gemini-2.0-flash",
+            contents: input,
+            config: generationConfig
+        })
+
+        for await (const chunk of stream) {
+            var chunkText = chunk.text
 
             if (chunkText === "") {
                 chunkText = "."
@@ -81,6 +78,7 @@ module.exports = {
 			    history.shift()
             }
         }
+
     },
     setPrompt(newPrompt) {
         prompt = newPrompt
