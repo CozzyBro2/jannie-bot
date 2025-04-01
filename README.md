@@ -50,6 +50,14 @@ To run the bot, run:
 ```
 node .
 ```
-You can also run it with [Bun](https://bun.sh/).
-As of Bun 1.1.5, everything works except for TextDecoderStream used in the Generative AI Package and the Brotli implementation used in Axios.
-Currently, i've implemented a workaround or Axios at run-time. To make `TextDecoderStream` in Google's package work, see this [issue](https://github.com/oven-sh/bun/issues/5648#issuecomment-1824093837).
+You can also run it with [Bun](https://bun.sh/). 
+Most everything should work with Bun. If it doesn't, you can seamlessly revert to pnpm/node.
+
+
+~~As of Bun 1.1.5, everything works except for TextDecoderStream used in the Generative AI Package and the Brotli implementation used in Axios.
+Currently, i've implemented a workaround or Axios at run-time. To make `TextDecoderStream` in Google's package work, see this [issue](https://github.com/oven-sh/bun/issues/5648#issuecomment-1824093837).~~
+
+
+Tip: If you plan to deploy this bot in production and are using Bun, try [building](https://bun.sh/docs/bundler/executables) a standalone executable:
+
+`bun build ./index.js --compile --minify --sourcemap --target=bun-windows-x64 --outfile jannie-bot.exe`

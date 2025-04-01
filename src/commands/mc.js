@@ -1,9 +1,6 @@
 const {SlashCommandBuilder, EmbedBuilder} = require("discord.js")
 const {request} = require("axios")
 
-// Use gzip over brotli as a temp Bun workaround (needed as of 1.1.5)
-//require("axios").defaults.headers.common["Accept-Encoding"] = "gzip";
-
 module.exports = {
     defer: true,
     data: new SlashCommandBuilder()
