@@ -4,19 +4,18 @@
     "clear-commands": "node ./scripts/clear-commands.js"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.1.2",
-    "axios": "^1.6.2",
-    "discord.js": "^14.14.1",
-    "dotenv": "^16.3.1"
-    
+    "@google/genai": "^0.7.0",
+    "axios": "^1.8.4",
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
-    "eslint": "^8.55.0"
+    "eslint": "^9.23.0"
   },
   "optionalDependencies": {
-    "bufferutil": "^4.0.8",
+    "bufferutil": "^4.0.9",
     "erlpack": "^0.1.4",
-    "utf-8-validate": "^6.0.3",
+    "utf-8-validate": "^6.0.5",
     "zlib-sync": "^0.1.9"
   }
 }
