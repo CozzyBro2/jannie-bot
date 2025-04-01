@@ -1,4 +1,4 @@
-const {Events} = require("discord.js")
+const {Events, MessageFlags} = require("discord.js")
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -13,7 +13,7 @@ module.exports = {
     
             try {
                 if (command.defer) {
-                    await interaction.deferReply({ephemeral: command.ephemeral || false})
+                    await interaction.deferReply({flags: command.ephemeral && MessageFlags.Ephemeral || MessageFlags.Loading})
                 }
 
                 await command.execute(interaction)

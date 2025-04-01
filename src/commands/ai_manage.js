@@ -8,7 +8,6 @@ module.exports = {
         .setName("manage_ai")
         .setDescription("Manage the AI")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-        .setDMPermission(false)
         .addSubcommand(command => command
             .setName("prompt")
             .setDescription("Change the AI prompt")

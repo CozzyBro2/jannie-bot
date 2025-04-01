@@ -18,8 +18,7 @@ module.exports = {
             .setName("soy")
             .setDescription("Bypasses the set prompt in favor of default behavior")
             .setRequired(false)
-        )
-        .setDMPermission(false),
+        ),
     async execute(interaction) {
         const speakSoy = interaction.options.getBoolean("soy") ?? false
         const input = interaction.options.getString("message")

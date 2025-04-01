@@ -12,8 +12,7 @@ module.exports = {
             .setName("word")
             .setDescription("The word to query")
             .setMaxLength(50)
-            .setRequired(true))
-        .setDMPermission(false),
+            .setRequired(true)),
     async execute(interaction) {
         const word = interaction.options.getString("word")
 
