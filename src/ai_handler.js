@@ -53,18 +53,17 @@ function getDiscordPrompt(guild) {
 
 function waitUntilAvailable() {
     let delay = null
-    pressure += 0.4
+    pressure += 0.5
 
     // There is pressure; tack on a delay to help keep the API from exhausting.
     if (pressure > 1) {
         delay = pressure / 2
     }
 
+    setTimeout(() => pressure -= 0.5, 500)
+
     if (delay) {
-        return new Promise(resolve => setTimeout(() => {
-            resolve()
-            pressure -= 0.4
-        }, delay * 1000))
+        return new Promise(resolve => setTimeout(resolve, delay * 1000))
     }
 }
 
