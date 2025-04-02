@@ -23,7 +23,6 @@ module.exports = {
         }
 
         async function dailyAnnoyance() {
-            // TODO: Make this code less W.E.T
             if (process.env.ANNOY_SERVERS) {
                 var text = ""
  
@@ -40,6 +39,6 @@ module.exports = {
             setInterval(dailyAnnoyance, interval)
         }
         
-        dailyAnnoyance(dailyAnnoyance, interval) // setInterval(dailyAnnoyance, interval)
+        setInterval(dailyAnnoyance, interval)
     }
 }
