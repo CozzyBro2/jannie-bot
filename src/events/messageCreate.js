@@ -1,4 +1,4 @@
-const {Events} = require("discord.js")
+const {Events, Collection} = require("discord.js")
 const {generate} = require("../ai_handler")
 
 const trim = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str)
@@ -19,7 +19,7 @@ module.exports = {
                 let text = ""
                 let msg = null
 
-                generate(message, {content: content, callback: async (chunkText) => {
+                generate(message.guild, {content: content, callback: async (chunkText) => {
                     text += chunkText
 
                     if (!msg || text.length > 2000) {

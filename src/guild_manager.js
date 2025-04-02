@@ -20,7 +20,7 @@ module.exports = {
                 
                 roles.each(role => {
                     role.members.each(member => {
-                        if (smallCache.size < 20 && !smallCache.hasAny(member.id))  {
+                        if (smallCache.size < 25 && !smallCache.hasAny(member.id))  {
                             smallCache.set(member.id, member)
                         }
                     })

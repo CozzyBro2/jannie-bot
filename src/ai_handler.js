@@ -19,9 +19,15 @@ const safetySettings = [
     },
 ]
 
+const modelConfig = {
+    maxOutputTokens: 100,
+    temperature: 1.5, // make him funny
+}
+
 const ai = new GoogleGenAI({apiKey: process.env.GOOGLEAI_KEY})
 
 let prompt = process.env.GOOGLEAI_PROMPT
+let pressure = 0
 let history = []
 
 function dumpHistory() {
@@ -39,14 +45,30 @@ function getDiscordPrompt(guild) {
     var usersString = ""
 
     guild.smallCache.map(member => {
-        usersString += `\n{Name: '${member.user.globalName}', Nickname: '${member.displayName}'}`
+        usersString += `\n{Name: '${member.user.username}', Nickname: '${member.displayName}'}`
     })
 
     return `You are in a discord server named '${guild.name}'. It is occupied by the following user(s): ${usersString}`
 }
 
+function waitUntilAvailable() {
+    let delayMs = 0
+    pressure += 0.5
+
+    if (pressure > 1) {
+        delayMs = 0.5 * pressure
+
+    }
+
+    setTimeout(() => pressure -= 0.5, delayMs * 1000)
+
+    return new Promise(resolve => setTimeout(resolve, delayMs * 1000))
+}
+
 module.exports = {
     async generate(guild, options) {
+        await waitUntilAvailable()
+
         const content = options.content
         const callback = options.callback
         const ignoreHistory = options.ignoreHistory
@@ -72,6 +94,7 @@ module.exports = {
             contents: content,
             config: {
                 safetySettings: safetySettings,
+                config: modelConfig,
                 systemInstruction: systemPrompt
             }
         })

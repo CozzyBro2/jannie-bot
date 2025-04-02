@@ -26,7 +26,7 @@ module.exports = {
         let text = ""
         let msg = null
 
-        generate(interaction.guild, {content: input, ignoreHistory: speakSoy, ignorePrompt: speakSoy, callback: async (chunkText) => {
+        generate(interaction.guild, {content: input, ignoreHistory: speakSoy, ignorePrompt: speakSoy, ignnoreMembers: speakSoy, callback: async (chunkText) => {
             text += chunkText
 
             if (!msg || text.length > 2000) {
