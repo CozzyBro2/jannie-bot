@@ -26,17 +26,17 @@ module.exports = {
         let text = ""
         let msg = null
 
-        generate(interaction, {content: input, ignoreHistory: speakSoy, ignorePrompt: speakSoy, callback: async (chunkText) => {
+        generate(interaction.guild, {content: input, ignoreHistory: speakSoy, ignorePrompt: speakSoy, callback: async (chunkText) => {
             text += chunkText
 
-            if (!msg) {
+            if (!msg || text.length > 2000) {
+                text = chunkText
                 msg = await interaction.editReply({content: text, fetchReply: true})
+
                 return
             }
         
             await msg.edit(text)
         }})
-
-        console.log(input)
     }
 }

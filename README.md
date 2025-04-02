@@ -32,7 +32,7 @@ RAPIDAPI_KEY=<key> # Needed to use the /whatis command. Get a key here: https://
 GOOGLEAI_KEY=<key> # Needed to use AI functionality. Get a key here: https://ai.google.dev/tutorials/setup
 GOOGLEAI_PROMPT=<prompt> # Tells the AI what to do and how to act. Example: "You are a fish. You speak only like a fish, you speak no other way."
 AI_HUMANS_ONLY=<boolean> # Whether the AI responds when other bots/apps mention it
-ANNOY_SERVER=<boolean> # Whether the bot will put a funny little message in each server once per day
+ANNOY_SERVERS=<boolean> # Whether the bot will put a funny little message in each server once per day
 READ_MEMBERS=<boolean> # Whether the bot will include information about server members in it's responnses
 ```
 

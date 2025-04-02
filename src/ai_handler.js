@@ -46,7 +46,7 @@ function getDiscordPrompt(guild) {
 }
 
 module.exports = {
-    async generate(interaction, options) {
+    async generate(guild, options) {
         const content = options.content
         const callback = options.callback
         const ignoreHistory = options.ignoreHistory
@@ -56,7 +56,7 @@ module.exports = {
         var systemPrompt = ""
 
         if (!ignoreMembers) {
-            systemPrompt += getDiscordPrompt(interaction.guild)
+            systemPrompt += getDiscordPrompt(guild)
         }
 
         if (!ignoreHistory) {
@@ -66,8 +66,6 @@ module.exports = {
         if (!ignorePrompt) {
             systemPrompt += `\n\nYour prompt: ${prompt}`
         }
-
-        console.log(`SYstem prompt:\n${systemPrompt}\nContent:\n${content}`)
 
         const stream = await ai.models.generateContentStream({
             model: "gemini-2.0-flash",

@@ -29,7 +29,12 @@ module.exports = {
         )
         .addSubcommand(command => command
             .setName("annoy")
-            .setDescription("Toggles the random message in every server once a day")
+            .addBooleanOption(option => option
+                .setName("enabled")
+                .setDescription("Whether the feature will be enabled")
+                .setRequired(true)
+            )
+            .setDescription("Toggles the random message in every server every day or so")
         ),
     async execute(interaction) {
         const cmd = interaction.options.getSubcommand()
@@ -48,6 +53,8 @@ module.exports = {
             const hist = dumpHistory()
 
             interaction.editReply(`Conversation history:\n\`\`\`${hist}\`\`\``)
+        } else if (cmd == "annoy") {
+            process.env.ANNOY_SERVERS = interaction.options.getBoolean("enabled")
         }
     }
 }
