@@ -52,17 +52,20 @@ function getDiscordPrompt(guild) {
 }
 
 function waitUntilAvailable() {
-    let delayMs = 0
-    pressure += 0.5
+    let delay = null
+    pressure += 0.4
 
+    // There is pressure; tack on a delay to help keep the API from exhausting.
     if (pressure > 1) {
-        delayMs = 0.5 * pressure
-
+        delay = pressure / 2
     }
 
-    setTimeout(() => pressure -= 0.5, delayMs * 1000)
-
-    return new Promise(resolve => setTimeout(resolve, delayMs * 1000))
+    if (delay) {
+        return new Promise(resolve => setTimeout(() => {
+            resolve()
+            pressure -= 0.4
+        }, delay * 1000))
+    }
 }
 
 module.exports = {
