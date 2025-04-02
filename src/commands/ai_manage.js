@@ -26,6 +26,10 @@ module.exports = {
         .addSubcommand(command => command
             .setName("history")
             .setDescription("Replies with the AI conversation history")
+        )
+        .addSubcommand(command => command
+            .setName("annoy")
+            .setDescription("Toggles the random message in every server once a day")
         ),
     async execute(interaction) {
         const cmd = interaction.options.getSubcommand()

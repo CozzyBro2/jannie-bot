@@ -11,8 +11,7 @@ module.exports = {
         }
 
         if (message.mentions.has(message.client.user.id)) {
-            const content = trim(`user ${message.author.username} says: ` + message.content.replace(/<@!?\d+>/g, ` `), 512)
-            console.log(content)
+            const content = trim(`user ${message.author.displayName} says: ` + message.content.replace(/<@!?\d+>/g, ` `), 512)
 
             try {
                 message.channel.sendTyping()
@@ -20,7 +19,7 @@ module.exports = {
                 let text = ""
                 let msg = null
 
-                generate(content, {callback: async (chunkText) => {
+                generate(message, {content: content, callback: async (chunkText) => {
                     text += chunkText
 
                     if (!msg || text.length > 2000) {

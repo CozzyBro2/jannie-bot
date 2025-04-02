@@ -26,7 +26,7 @@ module.exports = {
         let text = ""
         let msg = null
 
-        generate(input, {ignoreHistory: speakSoy, ignorePrompt: speakSoy, callback: async (chunkText) => {
+        generate(interaction, {content: input, ignoreHistory: speakSoy, ignorePrompt: speakSoy, callback: async (chunkText) => {
             text += chunkText
 
             if (!msg) {

@@ -1,36 +1,38 @@
 require("dotenv").config()
 
-const fs = require("fs")
-const path = require("path")
+const {readdirSync} = require("fs")
+const {join} = require("path")
 const {Client, Collection, GatewayIntentBits, ActivityType} = require("discord.js")
 
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildMessages
     ]
 })
 
+client.guildCache = new Collection()
 client.commands = new Collection()
 
-const commandFolder = path.join(__dirname, "src", "commands")
-const eventFolder = path.join(__dirname, "src", "events")
+const commandFolder = join(__dirname, "src", "commands")
+const eventFolder = join(__dirname, "src", "events")
 
-for (const file of fs.readdirSync(commandFolder)) {
+for (const file of readdirSync(commandFolder)) {
     if (file.endsWith(".js")) {
-        const command = require(path.join(commandFolder, file))
+        const command = require(join(commandFolder, file))
 
         if ("data" in command && "execute" in command) {
             client.commands.set(command.data.name, command)
         } else {
-            throw new Error(`Command file ${path.join(commandFolder, file)} is missing a 'data' or 'execute' property.`)
+            throw new Error(`Command file ${join(commandFolder, file)} is missing a 'data' or 'execute' property.`)
         }
     }
 }
 
-for (const file of fs.readdirSync(eventFolder)) {
+for (const file of readdirSync(eventFolder)) {
     if (file.endsWith(".js")) {
-        const event = require(path.join(eventFolder, file))
+        const event = require(join(eventFolder, file))
 
         if (event.once) {
             client.once(event.name, (...args) => event.execute(...args));

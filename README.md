@@ -31,7 +31,9 @@ GUILD_ID=<dev_guild_id> # OPTIONAL: When not deploying commands globally, deploy
 RAPIDAPI_KEY=<key> # Needed to use the /whatis command. Get a key here: https://rapidapi.com/community/api/urban-dictionary
 GOOGLEAI_KEY=<key> # Needed to use AI functionality. Get a key here: https://ai.google.dev/tutorials/setup
 GOOGLEAI_PROMPT=<prompt> # Tells the AI what to do and how to act. Example: "You are a fish. You speak only like a fish, you speak no other way."
-AI_HUMANS_ONLY=<trueorfalse> # Whether the AI responds when other bots/apps mention it
+AI_HUMANS_ONLY=<boolean> # Whether the AI responds when other bots/apps mention it
+ANNOY_SERVER=<boolean> # Whether the bot will put a funny little message in each server once per day
+READ_MEMBERS=<boolean> # Whether the bot will include information about server members in it's responnses
 ```
 
 # Deploy slash commands
