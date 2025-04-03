@@ -1,5 +1,10 @@
 const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/genai")
 
+const modelName = process.env.AI_MODEl || "gemini-2.0-flash"
+const memoryDisabled = process.env.AI_MEMORY_DISABLED
+const selfMemoryDisabled = process.env.AI_SELF_MEMORY_DISABLED
+const memoryLimit = process.env.AI_SELF_MEMORY_DISABLED && 20 || 30
+
 const safetySettings = [
     {
         category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -26,7 +31,7 @@ const modelConfig = {
 
 const ai = new GoogleGenAI({apiKey: process.env.GOOGLEAI_KEY})
 
-let prompt = process.env.GOOGLEAI_PROMPT
+let prompt = process.env.AI_PROMPT
 let pressure = 0
 let history = []
 
@@ -73,18 +78,19 @@ module.exports = {
 
         const content = options.content
         const callback = options.callback
-        const ignoreHistory = options.ignoreHistory
+        const ignoreHistory = options.ignoreHistory || memoryDisabled
         const ignorePrompt = options.ignorePrompt
         const ignoreMembers = options.ignoreMembers
 
         var systemPrompt = ""
+        var response = "you responded: "
 
         if (!ignoreMembers) {
             systemPrompt += getDiscordPrompt(guild)
         }
 
         if (!ignoreHistory) {
-            systemPrompt += `\n\nPrevious messages addressed to you: ${dumpHistory()}`
+            systemPrompt += `\n\nYour conversation history (if any): ${dumpHistory()}`
         }
 
         if (!ignorePrompt) {
@@ -92,7 +98,7 @@ module.exports = {
         }
 
         const stream = await ai.models.generateContentStream({
-            model: "gemini-2.0-flash",
+            model: modelName,
             contents: content,
             config: {
                 safetySettings: safetySettings,
@@ -102,19 +108,24 @@ module.exports = {
         })
 
         for await (const chunk of stream) {
-            var chunkText = chunk.text
+            let chunkText = chunk.text
 
             if (chunkText === "") {
                 chunkText = "."
             }
 
+            response += chunkText
             await callback(chunkText)
         }
 
         if (!ignoreHistory) {
             history.push({content: content})
 
-            if (history.length > 20) {
+            if (!selfMemoryDisabled) {
+                history.push({content: response})
+            }
+
+            if (history.length > memoryLimit) {
 			    history.shift()
             }
         }

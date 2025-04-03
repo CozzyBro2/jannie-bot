@@ -7,7 +7,7 @@ module.exports = {
         guild.smallCache = smallCache
         guild.client.guildCache.set(guild.id, guild)
 
-        if (!process.env.READ_MEMBERS) {
+        if (!process.env.AI_MEMORIZE_MEMBERS) {
             return
         }
 

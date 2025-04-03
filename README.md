@@ -13,7 +13,7 @@ Will respond to you like an AI chat-bot if you mention the bot user, or with the
 
 # Setup packages
 First, ensure you have all the production dependencies:  
-(I use pnpm, you could substitute it for npm)  
+(I use pnpm, you could substitute it for npm or bun)
 ```
 pnpm install --production
 ```
@@ -25,15 +25,19 @@ Learn more about these dependencies [here](https://discord.js.org/docs/packages/
 Create a file called `.env` in the project directory.
 Here is the outline of the file. Replace any <> fields with their respective values.
 ```
-TOKEN=<bot_token>
-CLIENT_ID=<bot_client_id>
-GUILD_ID=<dev_guild_id> # OPTIONAL: When not deploying commands globally, deploys commands to this guild for development purposes.
+TOKEN=<bot_token> # Needed for basic bot function
+CLIENT_ID=<bot_client_id> # Needed to deploy commands
+GUILD_ID=<dev_guild_id> # OPTIONAL: When not deploying commands globally, deploys commands to this specific guild.
 RAPIDAPI_KEY=<key> # Needed to use the /whatis command. Get a key here: https://rapidapi.com/community/api/urban-dictionary
-GOOGLEAI_KEY=<key> # Needed to use AI functionality. Get a key here: https://ai.google.dev/tutorials/setup
-GOOGLEAI_PROMPT=<prompt> # Tells the AI what to do and how to act. Example: "You are a fish. You speak only like a fish, you speak no other way."
-AI_HUMANS_ONLY=<boolean> # Whether the AI responds when other bots/apps mention it
-ANNOY_SERVERS=<boolean> # Whether the bot will put a funny little message in each server once per day
-READ_MEMBERS=<boolean> # Whether the bot will include information about server members in it's responnses
+AI_KEY=<key> # Needed to use AI functionality. Get a key here: https://ai.google.dev/tutorials/setup
+AI_PROMPT=<prompt> # OPTIONAL: Tells the AI what to do and how to act. Example: "You are a fish. You speak only like a fish, you speak no other way."
+AI_HUMANS_ONLY=<boolean> # OPTIONAL: If set to true, only discord members can use the AI chat feature.
+AI_MEMORY_DISABLED=<boolean> # OPTIONAL: Prevents the AI from keeping a short memory of what users have said to it
+AI_SELF_MEMORY_DISABLED=<boolean> # OPTIONAL: Prevents the AI from keeping a short memory of what it has said to users
+AI_MEMORIZE_MEMBERS=<boolean> # OPTIONAL: Whether the AI memory includes information about the top 25 members per server (nickname, username)
+AI_ANNOY_SERVERS=<boolean> # OPTIONAL: Whether the bot will randomly generate a message in the #general of each server daily
+AI_ANNOY_PROMPT=<string> # OPTIONAL: The prompt that will be used for the annoy messsage
+AI_MODEL=<string> # OPTIONAL: The Gemini model which will be used for AI features. View available models here: https://ai.google.dev/gemini-api/docs/models
 ```
 
 # Deploy slash commands

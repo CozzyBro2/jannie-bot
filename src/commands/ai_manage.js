@@ -54,7 +54,7 @@ module.exports = {
 
             interaction.editReply(`Conversation history:\n\`\`\`${hist}\`\`\``)
         } else if (cmd == "annoy") {
-            process.env.ANNOY_SERVERS = interaction.options.getBoolean("enabled")
+            process.env.AI_ANNOY_SERVERS = interaction.options.getBoolean("enabled")
         }
     }
 }

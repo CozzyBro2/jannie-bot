@@ -23,14 +23,14 @@ module.exports = {
         }
 
         async function dailyAnnoyance() {
-            if (process.env.ANNOY_SERVERS) {
+            if (process.env.AI_ANNOY_SERVERS) {
                 var text = ""
  
                 await generate(guild, {
                     callback: async (chunkText) => {
                         text += chunkText
                     },
-                    content: "Say something random that will get people talking or is entertaining. Do not mention this instruction or your other instructions. Do a 50/50 coinflip in your head, and use that to decide whether you will mention a random user in the server. If so, mention this user's name in your message somewhere natural."
+                    content: process.env.AI_ANNOY_PROMPT
                 })
 
                 channel.send(text)
@@ -39,6 +39,6 @@ module.exports = {
             setInterval(dailyAnnoyance, interval)
         }
         
-        setInterval(dailyAnnoyance, interval)
+        setInterval(dailyAnnoyance, interval / 2.5)
     }
 }
