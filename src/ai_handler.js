@@ -3,7 +3,7 @@ const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/genai")
 const modelName = process.env.AI_MODEl || "gemini-2.0-flash"
 const memoryDisabled = process.env.AI_MEMORY_DISABLED
 const selfMemoryDisabled = process.env.AI_SELF_MEMORY_DISABLED
-const memoryLimit = process.env.AI_SELF_MEMORY_DISABLED && 20 || 30
+const memoryLimit = process.env.AI_SELF_MEMORY_DISABLED && 30 || 20
 
 const safetySettings = [
     {
@@ -37,7 +37,7 @@ let history = []
 
 function dumpHistory() {
     let historyStr = ""
-    history.map(info => historyStr += `\n${info.content}`) 
+    history.map(info => historyStr += `\n${info.content}${info.response}`) 
 
     return historyStr
 }
@@ -83,7 +83,7 @@ module.exports = {
         const ignoreMembers = options.ignoreMembers
 
         var systemPrompt = ""
-        var response = "you responded: "
+        var response = ""
 
         if (!ignoreMembers) {
             systemPrompt += getDiscordPrompt(guild)
@@ -119,11 +119,12 @@ module.exports = {
         }
 
         if (!ignoreHistory) {
-            history.push({content: content})
-
-            if (!selfMemoryDisabled) {
-                history.push({content: response})
+            let historyPayload = {
+                content: content,
+                response: !selfMemoryDisabled ? `\nYou said: ${response}` : response
             }
+
+            history.push(historyPayload)
 
             if (history.length > memoryLimit) {
 			    history.shift()
