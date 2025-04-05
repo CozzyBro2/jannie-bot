@@ -2,7 +2,7 @@ const {Events, ChannelType} = require("discord.js")
 const {addGuild} = require("../guild_manager")
 const {generate} = require("../ai_handler")
 
-const interval = 1000 * 60 * 60 * 14 // 14 hours
+const interval = 1000 * 60 * 60 * 22 // 14 hours
 
 async function findGeneral(guild) {
     await guild.channels.fetch()
@@ -30,6 +30,7 @@ module.exports = {
                     callback: async (chunkText) => {
                         text += chunkText
                     },
+                    ignoreHistory: true,
                     content: process.env.AI_ANNOY_PROMPT
                 })
 
