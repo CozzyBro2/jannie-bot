@@ -1,4 +1,5 @@
 const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/genai")
+const logger = require("pino")()
 
 const modelName = process.env.AI_MODEl || "gemini-2.0-flash"
 const memoryDisabled = process.env.AI_MEMORY_DISABLED
@@ -26,7 +27,7 @@ const safetySettings = [
 
 const modelConfig = {
     maxOutputTokens: 100,
-    temperature: 1.5, // make him funny
+    temperature: 1.9, // make him funny
 }
 
 const ai = new GoogleGenAI({apiKey: process.env.GOOGLEAI_KEY})
@@ -37,7 +38,7 @@ let history = []
 
 function dumpHistory() {
     let historyStr = ""
-    history.map(info => historyStr += `\n${info.content}${info.response}`) 
+    history.map(info => historyStr += `\n${info.content}${info.response || ""}`) 
 
     return historyStr
 }
@@ -97,6 +98,8 @@ module.exports = {
             systemPrompt += `\n\nYour prompt: ${prompt}`
         }
 
+        logger.debug(content)
+
         const stream = await ai.models.generateContentStream({
             model: modelName,
             contents: content,
@@ -121,7 +124,7 @@ module.exports = {
         if (!ignoreHistory) {
             let historyPayload = {
                 content: content,
-                response: !selfMemoryDisabled ? `\nYou said: ${response}` : response
+                response: !selfMemoryDisabled ? `\nYou said: ${response}` : null
             }
 
             history.push(historyPayload)
