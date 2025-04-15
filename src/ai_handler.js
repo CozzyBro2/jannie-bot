@@ -38,7 +38,7 @@ let history = []
 
 function dumpHistory() {
     let historyStr = ""
-    history.map(info => historyStr += `\n${info.content}${info.response || ""}`) 
+    history.map(content => historyStr += `\n${content}}`) 
 
     return historyStr
 }
@@ -98,7 +98,7 @@ module.exports = {
             systemPrompt += `\n\nYour prompt: ${prompt}`
         }
 
-        logger.debug(content)
+        logger.debug(systemPrompt, content)
 
         const stream = await ai.models.generateContentStream({
             model: modelName,
@@ -122,14 +122,16 @@ module.exports = {
         }
 
         if (!ignoreHistory) {
-            let historyPayload = {
-                content: content,
-                response: !selfMemoryDisabled ? `\nYou said: ${response}` : null
+            history.push(content)
+            
+            if (!selfMemoryDisabled) {
+                history.push(`\nYou said: ${response}`)
             }
 
-            history.push(historyPayload)
-
             if (history.length > memoryLimit) {
+                if (!selfMemoryDisabled) {
+                    history.shift()
+                }
 			    history.shift()
             }
         }
