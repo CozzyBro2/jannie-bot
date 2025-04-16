@@ -1,9 +1,8 @@
 const {GoogleGenAI, HarmBlockThreshold, HarmCategory} = require("@google/genai")
-const logger = require("pino")()
 
 const modelName = process.env.AI_MODEl || "gemini-2.0-flash"
-const memoryDisabled = process.env.AI_MEMORY_DISABLED
-const selfMemoryDisabled = process.env.AI_SELF_MEMORY_DISABLED
+const memoryDisabled = process.env.AI_MEMORY_DISABLED ? false : true
+const selfMemoryDisabled = process.env.AI_SELF_MEMORY_DISABLED ? false : true
 const memoryLimit = process.env.AI_SELF_MEMORY_DISABLED && 30 || 20
 
 const safetySettings = [
@@ -38,7 +37,7 @@ let history = []
 
 function dumpHistory() {
     let historyStr = ""
-    history.map(content => historyStr += `\n${content}}`) 
+    history.map(content => historyStr += `\n${content}`) 
 
     return historyStr
 }
@@ -80,6 +79,7 @@ module.exports = {
         const content = options.content
         const callback = options.callback
         const ignoreHistory = options.ignoreHistory || memoryDisabled
+
         const ignorePrompt = options.ignorePrompt
         const ignoreMembers = options.ignoreMembers
 
@@ -97,8 +97,6 @@ module.exports = {
         if (!ignorePrompt) {
             systemPrompt += `\n\nYour prompt: ${prompt}`
         }
-
-        logger.debug(systemPrompt, content)
 
         const stream = await ai.models.generateContentStream({
             model: modelName,
@@ -123,7 +121,7 @@ module.exports = {
 
         if (!ignoreHistory) {
             history.push(content)
-            
+
             if (!selfMemoryDisabled) {
                 history.push(`\nYou said: ${response}`)
             }
